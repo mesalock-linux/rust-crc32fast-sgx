@@ -24,16 +24,26 @@
     feature(stdsimd, aarch64_target_feature)
 )]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
+
+#[cfg(all(feature = "mesalock_sgx", target_env = "sgx", feature = "std"))]
+extern crate core;
+
 #[deny(missing_docs)]
 #[cfg(test)]
 #[macro_use]
 extern crate quickcheck;
 
-#[macro_use]
+//#[macro_use]
 extern crate cfg_if;
 
-#[cfg(feature = "std")]
-use std as core;
+//#[cfg(feature = "std")]
+//use std as core;
 
 use core::fmt;
 use core::hash;
